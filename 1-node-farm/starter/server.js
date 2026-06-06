@@ -48,10 +48,11 @@ const getHtmlCard = (product, template) => {
 };
 
 const server = http.createServer((req, res) => {
-  const pathName = req.url;
+  // const pathName = req.url;
+  const { query, pathname } = url.parse(req.url, true);
 
   //   OVERVIEW
-  if (pathName === "/" || pathName === "/overview") {
+  if (pathname === "/" || pathname === "/overview") {
     res.writeHead(404, {
       "Content-type": "text/html",
     });
@@ -67,17 +68,24 @@ const server = http.createServer((req, res) => {
     res.end(templatesResult);
 
     // PRODUCT
-  } else if (pathName === "/product") {
-    res.end("This is product page");
+  } else if (pathname === "/product") {
+    res.writeHead(404, {
+      "Content-type": "text/html",
+    });
+    const productObj = dataList[query.id];
+    const output = getHtmlCard(productObj, templateProduct);
+
+    res.end(output);
 
     // API
-  } else if (pathName === "/api") {
+  } else if (pathname === "/api") {
     res.writeHead(200, {
       "Content-type": "application/json",
     });
     res.end(data);
-    // NOT FOUND
-  } else {
+  }
+  // NOT FOUND
+  else {
     res.writeHead(404, {
       "Content-type": "text/html",
       "some-headers": "Hello",
