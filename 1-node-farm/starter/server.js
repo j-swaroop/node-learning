@@ -2,6 +2,8 @@ const http = require("http");
 const url = require("url");
 const fs = require("fs");
 
+const getHtmlCard = require("./modules/replaceTemplate");
+
 const templateOverview = fs.readFileSync(
   `${__dirname}/templates/template-overview.html`,
   "utf-8",
@@ -17,35 +19,6 @@ const templateCard = fs.readFileSync(
 
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8");
 const dataList = JSON.parse(data);
-
-const getHtmlCard = (product, template) => {
-  const {
-    id,
-    productName,
-    image,
-    from,
-    nutrients,
-    quantity,
-    price,
-    organic,
-    description,
-  } = product;
-
-  let output = template.replace(/{%PRODUCTNAME%}/g, productName);
-  output = output.replace(/{%IMAGE%}/g, image);
-  output = output.replace(/{%FROM%}/g, from);
-  output = output.replace(/{%NUTRIENTS%}/g, nutrients);
-  output = output.replace(/{%QUANTITY%}/g, quantity);
-  output = output.replace(/{%PRICE%}/g, price);
-  output = output.replace(/{%DESCRIPTION%}/g, description);
-  output = output.replace(/{%ID%}/g, id);
-
-  if (!organic) {
-    output = output.replace(/{%NOT_ORGANIC%}/g, "not-organic");
-  }
-
-  return output;
-};
 
 const server = http.createServer((req, res) => {
   // const pathName = req.url;
