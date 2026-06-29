@@ -18,6 +18,17 @@ exports.validateId = (req, res, next, val) => {
   next();
 };
 
+exports.checkBody = (req, res, next) => {
+  if (!req.body.name || !req.body.duration) {
+    res.status(400).json({
+      status: 'failed',
+      message: 'Either name or duration missing',
+    });
+    return;
+  }
+  next();
+};
+
 exports.getAllTours = (req, res) => {
   res.status(301).send({
     status: 'success',
