@@ -4,6 +4,20 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`),
 );
 
+exports.validateId = (req, res, next, val) => {
+  const id = Number(val);
+  const foundIndex = tours.findIndex((item) => item.id === id);
+
+  if (foundIndex === -1) {
+    res.status(404).send({
+      status: 'failed',
+      message: 'Invalid Id',
+    });
+    return;
+  }
+  next();
+};
+
 exports.getAllTours = (req, res) => {
   res.status(301).send({
     status: 'success',
@@ -16,16 +30,7 @@ exports.getAllTours = (req, res) => {
 
 exports.getTour = (req, res) => {
   const id = Number(req.params.id);
-
   const foundIndex = tours.findIndex((item) => item.id === id);
-
-  if (foundIndex === -1) {
-    res.status(404).send({
-      status: 'failed',
-      message: 'Invalid Id',
-    });
-    return;
-  }
 
   const tour = tours[foundIndex];
   res.status(200).send({
@@ -60,16 +65,7 @@ exports.createTour = (req, res) => {
 
 exports.updateTour = (req, res) => {
   const id = Number(req.params.id);
-
   const foundIndex = tours.findIndex((item) => item.id === id);
-
-  if (foundIndex === -1) {
-    res.status(404).send({
-      status: 'failed',
-      message: 'Invalid Id',
-    });
-    return;
-  }
 
   const tour = tours[foundIndex];
 
@@ -84,16 +80,7 @@ exports.updateTour = (req, res) => {
 
 exports.deleteTour = (req, res) => {
   const id = Number(req.params.id);
-
   const foundIndex = tours.findIndex((item) => item.id === id);
-
-  if (foundIndex === -1) {
-    res.status(404).send({
-      status: 'failed',
-      message: 'Invalid Id',
-    });
-    return;
-  }
 
   tours.splice(foundIndex, 1);
   res.status(200).send({
