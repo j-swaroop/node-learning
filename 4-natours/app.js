@@ -13,7 +13,4 @@ app.use(morgan('dev'));
 app.use('/api/v1/tours', toursRouter);
 app.use('/api/v1/users', usersRouter);
 
-const port = 8000;
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}...`);
-});
+module.exports = app;
