@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "mongoose": "^5.13.23"
+    "mongoose": "^5.13.23",
+    "slugify": "^1.6.9"
   }
 }
