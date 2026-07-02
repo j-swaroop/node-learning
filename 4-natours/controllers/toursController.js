@@ -32,8 +32,46 @@ const Tour = require('../models/tourModel');
 
 exports.getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find();
-    res.status(301).json({
+    // BUILD QUERY
+    const queryObject = { ...req.query };
+    const excludeFields = ['sort', 'page', 'limit', 'fields'];
+
+    excludeFields.forEach((el) => delete queryObject[el]);
+
+    // console.log(req.query, queryObject);
+
+    // ADVANCED FILTERING
+    let queryStr = JSON.stringify(queryObject);
+    queryStr = JSON.parse(
+      queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`),
+    );
+
+    console.log(queryStr);
+    let query = Tour.find(queryStr);
+
+    // SORTING
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ');
+      query = query.sort(sortBy);
+    }
+
+    if (req.query.fields) {
+      const fieldsStr = req.query.fields.split(',').join(' ');
+      query = query.select(fieldsStr);
+    } else {
+      query = query.select('-__v');
+    }
+
+    // Pagination
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 3;
+    let skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+
+    const tours = await query;
+
+    res.status(200).json({
       status: 'success',
       total: tours.length,
       data: {
