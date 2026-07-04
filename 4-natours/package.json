@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
-    "start:prod": "NODE_ENV=production nodemon server.js"
+    "start:prod": "NODE_ENV=production nodemon server.js",
+    "debug": "ndb server.js"
   },
   "author": "",
   "license": "ISC",
@@ -15,5 +16,8 @@
     "express": "^4.16.4",
     "morgan": "^1.11.0",
     "nodemon": "^3.1.14"
+  },
+  "devDependencies": {
+    "ndb": "^1.1.5"
   }
 }
