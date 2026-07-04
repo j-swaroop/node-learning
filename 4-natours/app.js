@@ -14,7 +14,15 @@ if (process.env.NODE_ENV === 'development') {
 }
 app.use(express.static(`${__dirname}/pubic`));
 
+// ROUTES
 app.use('/api/v1/tours', toursRouter);
 app.use('/api/v1/users', usersRouter);
+
+app.all('*', (req, res, next) => {
+  res.status(404).json({
+    status: 'failed',
+    message: `Can't find Route ${req.originalUrl}`,
+  });
+});
 
 module.exports = app;
