@@ -22,6 +22,15 @@ mongoose
 const app = require('./app');
 
 const port = process.env.PORT || 8000;
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server listening on port ${port}...`);
+});
+
+// unhandled rejection - occurs in asynchronous code 
+process.on('unhandledRejection', (err) => {
+  console.log(err.name, err.message);
+  console.log('Shutting down the server');
+  server.close(() => {
+    process.exit(1);
+  });
 });
