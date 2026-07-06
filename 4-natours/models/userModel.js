@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 // name, email, photo, password, passwordConfirm
-
 let userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -41,6 +41,18 @@ let userSchema = new mongoose.Schema({
       message: 'Passwords do not match',
     },
   },
+});
+
+userSchema.pre('save', async function (next) {
+  // Only run this function if password actually modified
+  if (!this.isModified('password')) return;
+
+  //   Hash the password with the cost of 12
+  this.password = await bcrypt.hash(this.password, 12);
+
+  //   Deleting the password
+  this.passwordConfirm = undefined;
+  next();
 });
 
 let userModel = mongoose.model('User', userSchema);
