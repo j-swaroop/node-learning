@@ -6,7 +6,7 @@ const router = express.Router();
 
 // router.param('id', toursController.validateId);
 
-router.route('/tour-stats').get(toursController.getStats);
+router.route('/tour-stats').get(toursController.getTourStats);
 router.route(`/monthly-plan/:year`).get(toursController.getMonthlyPlan);
 
 router
