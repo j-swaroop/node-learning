@@ -19,6 +19,13 @@ mongoose
     console.log('DB Connected Successfully');
   });
 
+// uncaught Exception - occurs in synchronous code
+process.on('uncaughtException', (err) => {
+  console.log(err.name, err.message);
+  console.log('Shutting down the server');
+  process.exit(1);
+});
+
 const app = require('./app');
 
 const port = process.env.PORT || 8000;
@@ -26,7 +33,7 @@ const server = app.listen(port, () => {
   console.log(`Server listening on port ${port}...`);
 });
 
-// unhandled rejection - occurs in asynchronous code 
+// unhandled rejection - occurs in asynchronous code
 process.on('unhandledRejection', (err) => {
   console.log(err.name, err.message);
   console.log('Shutting down the server');
@@ -34,3 +41,5 @@ process.on('unhandledRejection', (err) => {
     process.exit(1);
   });
 });
+
+// console.log(x)
