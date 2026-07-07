@@ -36,10 +36,12 @@ const server = app.listen(port, () => {
 // unhandled rejection - occurs in asynchronous code
 process.on('unhandledRejection', (err) => {
   console.log(err.name, err.message);
-  console.log('Shutting down the server');
-  server.close(() => {
-    process.exit(1);
-  });
+  console.log(err);
+
+  // console.log('Shutting down the server');
+  // server.close(() => {
+  //   process.exit(1);
+  // });
 });
 
 // console.log(x)
