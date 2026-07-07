@@ -14,6 +14,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
+    role: req.body.role,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
   });
@@ -83,9 +84,18 @@ exports.protect = catchAsync(async (req, res, next) => {
   // 4. Check if user changed the password after token was issued.
 
   if (currentUser.changedPassword(decoded.iat)) {
-    return new AppError('User recently changed password. please login again');
+    return new AppError('User recently changed password. please login again', 401);
   }
 
-  req.user = currentUser
+  req.user = currentUser;
   next();
 });
+
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(new AppError('You dont have permissiong to perform this action', 403));
+    }
+    next();
+  };
+};

@@ -26,6 +26,11 @@ let userSchema = new mongoose.Schema({
   photo: {
     type: String,
   },
+  role: {
+    type: String,
+    required: [true, 'Role is required field'],
+    enum: ['user', 'guide', 'lead-guide', 'admin'],
+  },
   password: {
     type: String,
     required: [true, 'Password is a required field'],
@@ -71,7 +76,7 @@ userSchema.methods.changedPassword = function (JWTTimeStamp) {
       10,
     );
 
-    return JWTTimeStamp < changedTimeStamp
+    return JWTTimeStamp < changedTimeStamp;
   }
 
   // Password is not changed
