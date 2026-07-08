@@ -5,6 +5,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
+const hpp = require('hpp');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -39,8 +40,15 @@ app.use(express.json());
 // Data sanitization against NOSQL Query (EX: username: {$gt: ""}) Removes $
 app.use(mongoSanitize());
 
-// Data sanitization against xss (EX: username: <div id='data-id'>Test User</div>) Converts HTML into 
+// Data sanitization against xss (EX: username: <div id='data-id'>Test User</div>) Converts HTML into
 app.use(xss());
+
+// Prevent parameter pollution (Ex: sort=price&sort=ratings -> removes duplicate keys and takes the last one which is rating.)
+app.use(
+  hpp({
+    whitelist: [], // pass list of strings which duplicates keys are allowed
+  }),
+);
 
 // Serving static files
 app.use(express.static(`${__dirname}/pubic`));
