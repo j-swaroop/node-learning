@@ -76,7 +76,7 @@ exports.login = async (req, res, next) => {
   //   message: 'success',
   //   token,
   // });
-  createAndSendToken(newUser, 200, res);
+  createAndSendToken(user, 200, res);
 };
 
 exports.protect = catchAsync(async (req, res, next) => {

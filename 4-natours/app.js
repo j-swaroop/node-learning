@@ -3,6 +3,8 @@ const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -15,7 +17,7 @@ console.log(process.env.NODE_ENV);
 // Global Middlewares
 
 // Set security HTTP headers
-app.use(helmet())
+app.use(helmet());
 
 // Development logger
 if (process.env.NODE_ENV === 'development') {
@@ -33,6 +35,12 @@ app.use('/api', limiter);
 
 // Body Parser, reading data from body into req.body
 app.use(express.json());
+
+// Data sanitization against NOSQL Query (EX: username: {$gt: ""}) Removes $
+app.use(mongoSanitize());
+
+// Data sanitization against xss (EX: username: <div id='data-id'>Test User</div>) Converts HTML into 
+app.use(xss());
 
 // Serving static files
 app.use(express.static(`${__dirname}/pubic`));
