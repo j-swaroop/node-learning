@@ -38,8 +38,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   }
 
   // 2. Filter the body by allowing only specific fields (EX: Role cant be updated)
-  const filteredBody = filterBody(req.body, 'name', 'email');
-
+  const filteredBody = filterBody(req.body, 'name', 'email', 'active');
   // 3. update the user and send response
   const updatedUser = await User.findByIdAndUpdate(req.user._id, filteredBody, {
     runValidators: true,
@@ -50,6 +49,17 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     status: 'success',
     data: {
       user: updatedUser,
+    },
+  });
+});
+
+exports.deleteMe = catchAsync(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user._id, { active: false });
+
+  res.status(204).json({
+    status: 'success',
+    data: {
+      user: null,
     },
   });
 });
