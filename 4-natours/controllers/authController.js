@@ -12,6 +12,28 @@ const signToken = (id) => {
   });
 };
 
+const createAndSendToken = (user, statusCode, res) => {
+  const token = signToken(user._id);
+
+  const cookieOtions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
+    ),
+    httpOnly: true,
+  };
+
+  if (process.env.NODE_ENV === 'production') cookieOtions.secure = true;
+
+  res.cookie('jwt', token, cookieOtions);
+  res.status(statusCode).json({
+    message: 'success',
+    token,
+    data: {
+      user: user,
+    },
+  });
+};
+
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -21,15 +43,16 @@ exports.signup = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
   });
 
-  const token = signToken(newUser._id);
+  // const token = signToken(newUser._id);
 
-  res.status(201).json({
-    message: 'success',
-    token,
-    data: {
-      user: newUser,
-    },
-  });
+  // res.status(201).json({
+  //   message: 'success',
+  //   token,
+  //   data: {
+  //     user: newUser,
+  //   },
+  // });
+  createAndSendToken(newUser, 201, res);
 });
 
 exports.login = async (req, res, next) => {
@@ -48,11 +71,12 @@ exports.login = async (req, res, next) => {
   }
 
   // 3. If everything is okay, send token to client
-  const token = signToken(user._id);
-  res.status(200).json({
-    message: 'success',
-    token,
-  });
+  // const token = signToken(user._id);
+  // res.status(200).json({
+  //   message: 'success',
+  //   token,
+  // });
+  createAndSendToken(newUser, 200, res);
 };
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -172,12 +196,13 @@ exports.resetPassowrd = catchAsync(async (req, res, next) => {
   // 3. Update changedAtPassword for the user
 
   // 4. Log the user in, send the JWT token
-  const token = signToken(user._id);
+  // const token = signToken(user._id);
 
-  res.status(200).json({
-    message: 'success',
-    token,
-  });
+  // res.status(200).json({
+  //   message: 'success',
+  //   token,
+  // });
+  createAndSendToken(user, 200, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
@@ -192,10 +217,11 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   user.passwordConfirm = req.body.passwordConfirm;
   await user.save();
   // 4. Log User in, send JWT token
-  const token = signToken(user._id);
+  // const token = signToken(user._id);
 
-  res.status(200).json({
-    message: 'success',
-    token,
-  });
+  // res.status(200).json({
+  //   message: 'success',
+  //   token,
+  // });
+  createAndSendToken(user, 200, res);
 });
