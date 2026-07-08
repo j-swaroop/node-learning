@@ -29,8 +29,8 @@ let userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    required: [true, 'Role is required field'],
     enum: ['user', 'guide', 'lead-guide', 'admin'],
+    default: 'user',
   },
   password: {
     type: String,
@@ -67,7 +67,7 @@ userSchema.pre('save', async function (next) {
   // Only run this function if password actually modified
   if (!this.isModified('password') || this.isNew) return next();
 
-  this.passwordChangedAt = Date.now() - 1000
+  this.passwordChangedAt = Date.now() - 1000;
   next();
 });
 
