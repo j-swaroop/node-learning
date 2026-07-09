@@ -3,9 +3,14 @@ const express = require('express');
 const toursController = require('../controllers/toursController');
 const authController = require('../controllers/authController');
 
+const reviewsRouter = require('../routes/reviewsRoute');
+
 const router = express.Router();
 
 // router.param('id', toursController.validateId);
+
+// nested route using merge params
+router.use('/:tourId/reviews', reviewsRouter);
 
 router.route('/tour-stats').get(toursController.getTourStats);
 router.route(`/monthly-plan/:year`).get(toursController.getMonthlyPlan);
