@@ -14,19 +14,6 @@ const filterBody = (body, ...allowedFields) => {
   return newBody;
 };
 
-exports.getAllUsers = catchAsync(async (req, res) => {
-  const users = await User.find();
-
-  // SEND RESPONSE
-  res.status(200).json({
-    status: 'success',
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
-
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1. Check if user tries to update password and return error
   if (req.body.password || req.body.passwordConfirm) {
@@ -72,6 +59,7 @@ exports.createUser = (req, res) => {
   });
 };
 
+exports.getAllUsers = factory.getAll(User);
 exports.getUser = factory.getOne(User);
 exports.updateUser = factory.updateOne(User);
 exports.deleteUser = factory.deleteOne(User);
