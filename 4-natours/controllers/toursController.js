@@ -370,7 +370,7 @@ exports.getToursWithIn = catchAsync(async (req, res, next) => {
     status: 'success',
     results: tours.length,
     data: {
-      tours,
+      data: tours,
     },
   });
 });
